@@ -76,13 +76,13 @@ def get_node_info():
 					except:
 						traceback.print_exc()
 						break
-#					db_conn=MySQLdb.connect(host=conf.db_host,user=conf.db_user,passwd=conf.db_passwd,db=conf.db)
-#					cursor=db_conn.cursor()
+					db_conn=MySQLdb.connect(host=conf.db_host,user=conf.db_user,passwd=conf.db_passwd,db=conf.db)
+					cursor=db_conn.cursor()
 					cmd="insert into instance (instance_id,timestamp,cpu,mem,disk,net)  values ('"+str(name)+"','"+str(time.time())+"','"+str(cpu_usage)[:5]+"','"+str(memusage)+"','"+block_status+"','"+nic_status+"')"
 					print cmd
-#					cursor.execute(cmd)
-#					db_conn.commit()
-#					db_conn.close()
+					cursor.execute(cmd)
+					db_conn.commit()
+					db_conn.close()
 					queue.task_done()
 
 	if queue.qsize()<MAXTHREAD:
