@@ -68,23 +68,21 @@ def get_node_info():
 							cpu_usage=100
 						if dom_info[0]==1:
 							vm_status='active'
-						memstatus=os.popen("awk /VmRSS/'{print $2}' /proc/`ps aux | grep -v 'grep' |grep "+dom.name()+"|awk '{print $2}' `/status").readlines()[0][:-1]
+						memstatus=get_memory(os.popen("ps aux | grep "+dom.name()+" | grep -v 'grep'| awk '{print $2}'").readlines()[0])
 						memusage='%.2f' %  (int(memstatus)*100.0/int(dom_info[2]))
-						if memusage>100:
-							memusage=100
 						name=ElementTree.fromstring(dom.XMLDesc(0)).findtext('uuid')
 					except (KeyboardInterrupt,SystemExit):
 						raise
 					except:
 						traceback.print_exc()
 						break
-					db_conn=MySQLdb.connect(host=conf.db_host,user=conf.db_user,passwd=conf.db_passwd,db=conf.db)
-					cursor=db_conn.cursor()
+#					db_conn=MySQLdb.connect(host=conf.db_host,user=conf.db_user,passwd=conf.db_passwd,db=conf.db)
+#					cursor=db_conn.cursor()
 					cmd="insert into instance (instance_id,timestamp,cpu,mem,disk,net)  values ('"+str(name)+"','"+str(time.time())+"','"+str(cpu_usage)[:5]+"','"+str(memusage)+"','"+block_status+"','"+nic_status+"')"
 					print cmd
-					cursor.execute(cmd)
-					db_conn.commit()
-					db_conn.close()
+#					cursor.execute(cmd)
+#					db_conn.commit()
+#					db_conn.close()
 					queue.task_done()
 
 	if queue.qsize()<MAXTHREAD:
